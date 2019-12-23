@@ -18,6 +18,10 @@ use Nextras\Orm\Repository\IRepository;
 use function array_values;
 
 
+/**
+ * @phpstan-template E of IEntity
+ * @phpstan-implements ICollection<E>
+ */
 class ArrayCollection implements ICollection
 {
 	/**
@@ -27,8 +31,8 @@ class ArrayCollection implements ICollection
 	public $onEntityFetch = [];
 
 	/**
-	 * @var IEntity[]
-	 * @phpstan-var list<IEntity>
+	 * @var E[]
+	 * @phpstan-var list<E>
 	 */
 	protected $data;
 
@@ -41,7 +45,7 @@ class ArrayCollection implements ICollection
 	/** @var null|Iterator<IEntity> */
 	protected $fetchIterator;
 
-	/** @var IRepository */
+	/** @var IRepository<E> */
 	protected $repository;
 
 	/** @var ArrayCollectionHelper */
@@ -67,8 +71,8 @@ class ArrayCollection implements ICollection
 
 
 	/**
-	 * @param IEntity[] $entities
-	 * @phpstan-param list<IEntity> $entities
+	 * @param E[] $entities
+	 * @phpstan-param list<E> $entities
 	 */
 	public function __construct(array $entities, IRepository $repository)
 	{

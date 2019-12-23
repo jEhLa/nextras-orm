@@ -59,7 +59,7 @@ class PhpDocRepositoryFinder implements IRepositoryFinder
 	/**
 	 * @return array<string, string>
 	 * @phpstan-param class-string<\Nextras\Orm\Model\IModel> $modelClass
-	 * @phpstan-return array<string, class-string<IRepository>>
+	 * @phpstan-return array<string, class-string<IRepository<\Nextras\Orm\Entity\IEntity>>>
 	 */
 	protected function findRepositories(string $modelClass): array
 	{
@@ -83,7 +83,7 @@ class PhpDocRepositoryFinder implements IRepositoryFinder
 		 * @var string $name
 		 */
 		foreach ($matches as [, $type, $name]) {
-			/** @phpstan-var class-string<IRepository> $type */
+			/** @phpstan-var class-string<IRepository<\Nextras\Orm\Entity\IEntity>> $type */
 			$type = Reflection::expandClassName($type, $modelReflection);
 			if (!class_exists($type)) {
 				throw new RuntimeException("Repository '{$type}' does not exist.");

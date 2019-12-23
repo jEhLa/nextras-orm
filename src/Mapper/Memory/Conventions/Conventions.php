@@ -12,7 +12,10 @@ class Conventions implements IConventions
 	use SmartObject;
 
 
-	/** @var IMapper */
+	/**
+	 * @var IMapper
+	 * @phpstan-var IMapper<\Nextras\Orm\Entity\IEntity>
+	 */
 	private $mapper;
 
 	/**
@@ -24,6 +27,7 @@ class Conventions implements IConventions
 
 	/**
 	 * @param string[] $primaryKeys
+	 * @phpstan-param IMapper<\Nextras\Orm\Entity\IEntity> $mapper
 	 * @phpstan-param list<string> $primaryKeys
 	 */
 	public function __construct(IMapper $mapper, array $primaryKeys)

@@ -20,6 +20,10 @@ use function array_values;
 use function assert;
 
 
+/**
+ * @phpstan-template E of IEntity
+ * @phpstan-implements IMapper<E>
+ */
 abstract class ArrayMapper implements IMapper
 {
 	use MapperRepositoryTrait;
@@ -27,7 +31,7 @@ abstract class ArrayMapper implements IMapper
 
 	/**
 	 * @var IEntity[]|null[]|null
-	 * @phpstan-var array<int|string, IEntity|null>|null
+	 * @phpstan-var array<int|string, E|null>|null
 	 */
 	protected $data;
 
@@ -57,7 +61,8 @@ abstract class ArrayMapper implements IMapper
 
 
 	/**
-	 * @phpstan-param list<IEntity> $data
+	 * @phpstan-param list<E> $data
+	 * @phpstan-return ICollection<E>
 	 */
 	public function toCollection(array $data): ICollection
 	{
@@ -230,7 +235,7 @@ abstract class ArrayMapper implements IMapper
 
 
 	/**
-	 * @phpstan-return list<IEntity>
+	 * @phpstan-return list<E>
 	 */
 	protected function getData(): array
 	{

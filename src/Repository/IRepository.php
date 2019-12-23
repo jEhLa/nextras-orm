@@ -20,6 +20,9 @@ use Nextras\Orm\Model\IModel;
 use Nextras\Orm\NoResultException;
 
 
+/**
+ * @phpstan-template E of IEntity
+ */
 interface IRepository
 {
 	public function getModel(): IModel;
@@ -28,24 +31,30 @@ interface IRepository
 	public function setModel(IModel $model): void;
 
 
+	/**
+	 * @phpstan-return IMapper<E>
+	 */
 	public function getMapper(): IMapper;
 
 
 	/**
 	 * Hydrates entity.
 	 * @param array<string, mixed> $data
+	 * @phpstan-return E|null
 	 */
 	public function hydrateEntity(array $data): ?IEntity;
 
 
 	/**
 	 * Attaches entity to repository.
+	 * @phpstan-param E $entity
 	 */
 	public function attach(IEntity $entity): void;
 
 
 	/**
 	 * Detaches entity from repository.
+	 * @phpstan-param E $entity
 	 */
 	public function detach(IEntity $entity): void;
 
@@ -53,7 +62,7 @@ interface IRepository
 	/**
 	 * Returns possible entity class names for current repository.
 	 * @return string[]
-	 * @phpstan-return (class-string<IEntity>)[]
+	 * @phpstan-return list<class-string<IEntity>>
 	 */
 	public static function getEntityClassNames(): array;
 
@@ -61,6 +70,7 @@ interface IRepository
 	/**
 	 * Returns entity metadata.
 	 * @param string|null $entityClass for STI (must extends base class)
+	 * @phpstan-param class-string<E>|null $entityClass
 	 */
 	public function getEntityMetadata(string $entityClass = null): EntityMetadata;
 
@@ -68,7 +78,7 @@ interface IRepository
 	/**
 	 * Returns entity class name.
 	 * @param array<string, mixed> $data
-	 * @phpstan-return class-string<IEntity>
+	 * @phpstan-return class-string<E>
 	 */
 	public function getEntityClassName(array $data): string;
 
@@ -79,6 +89,7 @@ interface IRepository
 	 * Limits collection via {@see ICollection::findBy()} and returns the first entity (or null).
 	 *
 	 * @phpstan-param array<string, mixed>|array<mixed> $conds
+	 * @phpstan-return E|null
 	 */
 	public function getBy(array $conds): ?IEntity;
 
@@ -90,6 +101,7 @@ interface IRepository
 	 *
 	 * @phpstan-param array<string, mixed>|array<mixed> $conds
 	 * @throws NoResultException
+	 * @phpstan-return E
 	 */
 	public function getByChecked(array $conds): IEntity;
 
@@ -97,6 +109,7 @@ interface IRepository
 	/**
 	 * Returns entity by primary value, null if none found.
 	 * @param mixed $id
+	 * @phpstan-return E|null
 	 */
 	public function getById($id): ?IEntity;
 
@@ -111,6 +124,7 @@ interface IRepository
 
 	/**
 	 * Returns new collection with all entities.
+	 * @phpstan-return ICollection<E>
 	 */
 	public function findAll(): ICollection;
 
@@ -146,6 +160,7 @@ interface IRepository
 	 * </code>
 	 *
 	 * @phpstan-param array<string, mixed>|array<int|string, mixed>|list<mixed> $conds
+	 * @phpstan-return ICollection<E>
 	 */
 	public function findBy(array $conds): ICollection;
 
@@ -154,6 +169,7 @@ interface IRepository
 	 * Returns entities by primary values.
 	 * @param mixed[] $ids
 	 * @phpstan-param list<mixed> $ids
+	 * @phpstan-return ICollection<E>
 	 */
 	public function findById($ids): ICollection;
 
@@ -165,15 +181,35 @@ interface IRepository
 	public function getCollectionFunction(string $name);
 
 
+	/**
+	 * @phpstan-template F of E
+	 * @phpstan-param F $entity
+	 * @phpstan-return F
+	 */
 	public function persist(IEntity $entity, bool $withCascade = true): IEntity;
 
 
+	/**
+	 * @phpstan-template F of E
+	 * @phpstan-param F $entity
+	 * @phpstan-return F
+	 */
 	public function persistAndFlush(IEntity $entity, bool $withCascade = true): IEntity;
 
 
+	/**
+	 * @phpstan-template F of E
+	 * @phpstan-param F $entity
+	 * @phpstan-return F
+	 */
 	public function remove(IEntity $entity, bool $withCascade = true): IEntity;
 
 
+	/**
+	 * @phpstan-template F of E
+	 * @phpstan-param F $entity
+	 * @phpstan-return F
+	 */
 	public function removeAndFlush(IEntity $entity, bool $withCascade = true): IEntity;
 
 
@@ -187,6 +223,7 @@ interface IRepository
 	 * DO NOT CALL THIS METHOD DIRECTLY.
 	 * @internal
 	 * @ignore
+	 * @phpstan-param E $entity
 	 */
 	public function doPersist(IEntity $entity): void;
 
@@ -195,6 +232,7 @@ interface IRepository
 	 * DO NOT CALL THIS METHOD DIRECTLY.
 	 * @internal
 	 * @ignore
+	 * @phpstan-param E $entity
 	 */
 	public function doRemove(IEntity $entity): void;
 
@@ -202,7 +240,7 @@ interface IRepository
 	/**
 	 * DO NOT CALL THIS METHOD DIRECTLY.
 	 * @internal
-	 * @phpstan-return array{list<IEntity>, list<IEntity>} array of all persisted & removed entities
+	 * @phpstan-return array{list<E>, list<E>} array of all persisted & removed entities
 	 * @ignore
 	 */
 	public function doFlush(): array;
@@ -228,34 +266,58 @@ interface IRepository
 	// === events ======================================================================================================
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onBeforePersist(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onAfterPersist(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onBeforeInsert(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onAfterInsert(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onBeforeUpdate(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onAfterUpdate(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onBeforeRemove(IEntity $entity): void;
 
 
-	/** @internal */
+	/**
+	 * @phpstan-param E $entity
+	 * @internal
+	 */
 	public function onAfterRemove(IEntity $entity): void;
 }

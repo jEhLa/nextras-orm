@@ -51,7 +51,6 @@ class OneHasMany extends HasMany
 		$this->isModified = true;
 	}
 
-
 	protected function createCollection(): ICollection
 	{
 		assert($this->parent !== null);

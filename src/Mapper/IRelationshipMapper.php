@@ -12,6 +12,7 @@ interface IRelationshipMapper
 {
 	/**
 	 * Returns iterator.
+	 * @phpstan-param ICollection<IEntity> $collection
 	 * @return Iterator<IEntity>
 	 */
 	public function getIterator(IEntity $parent, ICollection $collection): Iterator;
@@ -19,6 +20,7 @@ interface IRelationshipMapper
 
 	/**
 	 * Returns iterator's counts.
+	 * @phpstan-param ICollection<IEntity> $collection
 	 */
 	public function getIteratorCount(IEntity $parent, ICollection $collection): int;
 

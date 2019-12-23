@@ -3,6 +3,7 @@
 namespace Nextras\Orm\Mapper\Memory;
 
 
+use Countable;
 use Iterator;
 use Nextras\Orm\Collection\EntityIterator;
 use Nextras\Orm\Collection\ICollection;
@@ -38,9 +39,6 @@ class RelationshipMapperManyHasMany implements IRelationshipMapperManyHasMany
 	}
 
 
-	/**
-	 * @return EntityIterator
-	 */
 	public function getIterator(IEntity $parent, ICollection $collection): Iterator
 	{
 		assert($this->metadata->relationship !== null);
@@ -67,7 +65,9 @@ class RelationshipMapperManyHasMany implements IRelationshipMapperManyHasMany
 
 	public function getIteratorCount(IEntity $parent, ICollection $collection): int
 	{
-		return count($this->getIterator($parent, $collection));
+		$iterator = $this->getIterator($parent, $collection);
+		assert($iterator instanceof Countable);
+		return count($iterator);
 	}
 
 

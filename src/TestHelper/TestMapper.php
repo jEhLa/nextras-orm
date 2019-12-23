@@ -7,6 +7,10 @@ use Nextras\Orm\Mapper\Memory\ArrayMapper;
 use Nextras\Orm\MemberAccessException;
 
 
+/**
+ * @phpstan-template E of \Nextras\Orm\Entity\IEntity
+ * @phpstan-extends ArrayMapper<E>
+ */
 class TestMapper extends ArrayMapper
 {
 	/** @var string */

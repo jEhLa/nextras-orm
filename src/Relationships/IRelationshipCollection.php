@@ -46,6 +46,7 @@ interface IRelationshipCollection extends IProperty, IEntityAwareProperty, Itera
 
 	/**
 	 * Returns collection of all entity.
+	 * @phpstan-return ICollection<IEntity>
 	 */
 	public function toCollection(): ICollection;
 

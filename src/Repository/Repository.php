@@ -34,6 +34,10 @@ use Nextras\Orm\NotImplementedException;
 use ReflectionClass;
 
 
+/**
+ * @phpstan-template E of IEntity
+ * @phpstan-implements IRepository<E>
+ */
 abstract class Repository implements IRepository
 {
 	/**
@@ -90,19 +94,25 @@ abstract class Repository implements IRepository
 	 */
 	public $onFlush = [];
 
-	/** @var IMapper */
+	/**
+	 * @var IMapper
+	 * @phpstan-var IMapper<E>
+	 */
 	protected $mapper;
 
 	/**
 	 * @var string
-	 * @phpstan-var class-string<IEntity>
+	 * @phpstan-var class-string<E>
 	 */
 	protected $entityClassName;
 
 	/** @var IModel|null */
 	private $model;
 
-	/** @var IdentityMap */
+	/**
+	 * @var IdentityMap
+	 * @phpstan-var IdentityMap<E>
+	 */
 	private $identityMap;
 
 	/** @var array<string, bool> */
@@ -113,7 +123,7 @@ abstract class Repository implements IRepository
 
 	/**
 	 * @var array
-	 * @phpstan-var array{list<IEntity>, list<IEntity>}
+	 * @phpstan-var array{list<E>, list<E>}
 	 */
 	private $entitiesToFlush = [[], []];
 
@@ -128,8 +138,7 @@ abstract class Repository implements IRepository
 
 
 	/**
-	 * @param IMapper $mapper
-	 * @param IDependencyProvider $dependencyProvider
+	 * @phpstan-param IMapper<E> $mapper
 	 */
 	public function __construct(IMapper $mapper, IDependencyProvider $dependencyProvider = null)
 	{
@@ -329,7 +338,9 @@ abstract class Repository implements IRepository
 	public function getEntityClassName(array $data): string
 	{
 		if (!$this->entityClassName) {
-			$this->entityClassName = static::getEntityClassNames()[0];
+			/** @phpstan-var class-string<E> $entityClassName */
+			$entityClassName = static::getEntityClassNames()[0];
+			$this->entityClassName = $entityClassName;
 		}
 
 		return $this->entityClassName;

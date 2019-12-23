@@ -25,7 +25,10 @@ class EntityCreator
 
 
 	/**
-	 * @param array<string, mixed> $params
+	 * @phpstan-template T of IEntity
+	 * @phpstan-param class-string<T> $entity
+	 * @phpstan-param array<string, mixed> $params
+	 * @phpstan-return T
 	 */
 	public function create(string $entity, array $params = []): IEntity
 	{

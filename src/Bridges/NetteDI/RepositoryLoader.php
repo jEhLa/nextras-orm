@@ -4,6 +4,7 @@ namespace Nextras\Orm\Bridges\NetteDI;
 
 
 use Nette\DI\Container;
+use Nextras\Orm\Entity\IEntity;
 use Nextras\Orm\Model\IRepositoryLoader;
 use Nextras\Orm\Repository\IRepository;
 
@@ -33,10 +34,17 @@ class RepositoryLoader implements IRepositoryLoader
 	}
 
 
+	/**
+	 * Returns instance of repository.
+	 * @phpstan-template T of IRepository<\Nextras\Orm\Entity\IEntity>
+	 * @phpstan-param class-string<T> $className
+	 * @phpstan-return T
+	 */
 	public function getRepository(string $className): IRepository
 	{
+		/** @var T $repository */
 		$repository = $this->container->getService($this->repositoryNamesMap[$className]);
-		assert($repository instanceof IRepository);
+		\assert($repository instanceof IRepository);
 		return $repository;
 	}
 

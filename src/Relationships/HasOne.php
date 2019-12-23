@@ -29,7 +29,10 @@ abstract class HasOne implements IRelationshipContainer
 	/** @var PropertyRelationshipMetadata */
 	protected $metadataRelationship;
 
-	/** @var ICollection */
+	/**
+	 * @var ICollection
+	 * @phpstan-var ICollection<IEntity>
+	 */
 	protected $collection;
 
 	/** @var mixed|null */
@@ -38,7 +41,10 @@ abstract class HasOne implements IRelationshipContainer
 	/** @var IEntity|null|false */
 	protected $value = false;
 
-	/** @var IRepository|null */
+	/**
+	 * @var IRepository|null
+	 * @phpstan-var IRepository<IEntity>|null
+	 */
 	protected $targetRepository;
 
 	/** @var bool */
@@ -197,6 +203,9 @@ abstract class HasOne implements IRelationshipContainer
 	}
 
 
+	/**
+	 * @phpstan-return IRepository<IEntity>
+	 */
 	protected function getTargetRepository(): IRepository
 	{
 		if (!$this->targetRepository) {
@@ -208,6 +217,9 @@ abstract class HasOne implements IRelationshipContainer
 	}
 
 
+	/**
+	 * @phpstan-return ICollection<IEntity>
+	 */
 	protected function getCollection(): ICollection
 	{
 		if ($this->collection !== null) {
@@ -278,6 +290,7 @@ abstract class HasOne implements IRelationshipContainer
 
 	/**
 	 * Creates relationship collection.
+	 * @phpstan-return ICollection<IEntity>
 	 */
 	abstract protected function createCollection(): ICollection;
 

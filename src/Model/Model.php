@@ -37,9 +37,9 @@ class Model implements IModel
 	/**
 	 * @var array
 	 * @phpstan-var array{
-	 *     array<class-string<IRepository>, true>,
-	 *     array<string, class-string<IRepository>>,
-	 *     array<class-string<IEntity>, class-string<IRepository>>
+	 *     array<class-string<IRepository<IEntity>>, true>,
+	 *     array<string, class-string<IRepository<IEntity>>>,
+	 *     array<class-string<IEntity>, class-string<IRepository<IEntity>>>
 	 *     }
 	 */
 	private $configuration;
@@ -48,11 +48,11 @@ class Model implements IModel
 	/**
 	 * Creates repository list configuration.
 	 * @param IRepository[]|string[] $repositories
-	 * @phpstan-param  array<string, class-string<IRepository>|IRepository> $repositories
+	 * @phpstan-param  array<string, class-string<IRepository<IEntity>>|IRepository<IEntity>> $repositories
 	 * @phpstan-return array{
-	 *     array<class-string<IRepository>, true>,
-	 *     array<string, class-string<IRepository>>,
-	 *     array<class-string<IEntity>, class-string<IRepository>>
+	 *     array<class-string<IRepository<IEntity>>, true>,
+	 *     array<string, class-string<IRepository<IEntity>>>,
+	 *     array<class-string<IEntity>, class-string<IRepository<IEntity>>>
 	 *     }
 	 */
 	public static function getConfiguration(array $repositories): array
@@ -61,7 +61,7 @@ class Model implements IModel
 		foreach ($repositories as $name => $repository) {
 			/**
 			 * @var string $className
-			 * @phpstan-var class-string<IRepository> $className
+			 * @phpstan-var class-string<IRepository<IEntity>> $className
 			 */
 			$className = is_object($repository) ? get_class($repository) : $repository;
 			$config[0][$className] = true;
@@ -76,9 +76,9 @@ class Model implements IModel
 
 	/**
 	 * @phpstan-param array{
-	 *     array<class-string<IRepository>, true>,
-	 *     array<string, class-string<IRepository>>,
-	 *     array<class-string<IEntity>, class-string<IRepository>>
+	 *     array<class-string<IRepository<IEntity>>, true>,
+	 *     array<string, class-string<IRepository<IEntity>>>,
+	 *     array<class-string<IEntity>, class-string<IRepository<IEntity>>>
 	 *     } $configuration
 	 */
 	public function __construct(
@@ -114,18 +114,11 @@ class Model implements IModel
 	}
 
 
-	/**
-	 * Returns repository by repository class.
-	 * @phpstan-template T of IRepository
-	 * @phpstan-param class-string<T> $className
-	 * @phpstan-return T
-	 */
 	public function getRepository(string $className): IRepository
 	{
 		if (!isset($this->configuration[0][$className])) {
 			throw new InvalidArgumentException("Repository '$className' does not exist.");
 		}
-		/** @phpstan-var T $repository */
 		$repository = $this->loader->getRepository($className);
 		return $repository;
 	}
@@ -237,21 +230,22 @@ class Model implements IModel
 
 	/**
 	 * Returns repository by name.
-	 * @param string $name
-	 * @return IRepository
+	 * @phpstan-return IRepository<\Nextras\Orm\Entity\IEntity>
 	 */
-	public function &__get($name)
+	public function &__get(string $name): IRepository
 	{
 		$repository = $this->getRepositoryByName($name);
 		return $repository;
 	}
 
 
-	/** @return IRepository[] */
+	/**
+	 * @return IRepository[]
+	 * @phpstan-return list<IRepository<\Nextras\Orm\Entity\IEntity>>>
+	 */
 	private function getLoadedRepositories()
 	{
 		$repositories = [];
-		/** @var string $className */
 		foreach (array_keys($this->configuration[0]) as $className) {
 			if ($this->loader->isCreated($className)) {
 				$repositories[] = $this->loader->getRepository($className);

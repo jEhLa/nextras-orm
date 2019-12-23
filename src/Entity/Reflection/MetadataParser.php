@@ -526,6 +526,7 @@ class MetadataParser implements IMetadataParser
 			}
 		}
 
+		/** @var class-string<\Nextras\Orm\Entity\IEntity> $entity */
 		$entity = Reflection::expandClassName($class, $this->currentReflection);
 		if (!isset($this->entityClassesMap[$entity])) {
 			throw new InvalidModifierDefinitionException("Relationship {{$modifier}} in {$this->currentReflection->name}::\${$property->name} points to unknown '{$entity}' entity. Don't forget to return it in IRepository::getEntityClassNames() and register its repository.");
